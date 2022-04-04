@@ -3,8 +3,9 @@
 #include<stdlib.h>
 #include<conio.h>
 #include<fstream>
+#include<iomanip>
 using namespace std;
-const char* fileName="employee.txt";
+const char* fileName="test.txt";
 
 class User{
 private:
@@ -34,7 +35,7 @@ public:
 
 class Employee{
 private:
-    string empName,address,email,phoneNo;
+    char empName[50],address[50],email[50],phoneNo[20];
     int empId;
     float salary;
 public:
@@ -43,10 +44,10 @@ public:
         cin>>empId;
          fflush(stdin);
         cout<<"Enter Full Name:";
-        getline(cin,empName);
+        cin.getline(empName,sizeof(empName));
          fflush(stdin);
         cout<<"Enter Address:";
-        getline(cin,address);
+        cin.getline(address,sizeof(address));
          fflush(stdin);
         cout<<"Enter Email";
         cin>>email;
@@ -56,27 +57,23 @@ public:
     }
 
     void displayHeader(){
-        cout<<"Employee Id \t Employee Name \t Address \t Email \t Phone Number"<<endl;
+        cout<<"Employee Id"<<setw(20)<<" Employee Name"<<setw(20)<<"Address"<<setw(20)<<"Email"<<setw(20)<<"Phone Number"<<endl;
     }
 
     void displayEmployeeDetails(){
-        cout<<empId<<empName<<address<<email<<phoneNo<<endl;
+        cout<<empId<<setw(20)<<empName<<setw(30)<<address<<setw(20)<<email<<setw(20)<<phoneNo<<endl;
     }
 
     int getId(){
         return empId;
     }
-
-
 };
-
 
 int main(){
     User user;
     int choice;
     fstream file;
-    Employee emp,e;
-    file.open(fileName,ios::app|ios::binary|ios::out|ios::in);
+    Employee e,emp;
     if(user.Authenticate()){
             while(1){
                 system("CLS");
@@ -91,8 +88,10 @@ int main(){
                 cin>>choice;
                 switch(choice){
                     case 1:{
+                        file.open(fileName,ios::app|ios::binary);
                         int isfound=0;
                         emp.getEmployeeDetails();
+                        file.clear();
                         file.seekg(0,ios::beg);
                         while(file.read((char*)&e,sizeof(e))){
                             if(emp.getId()==e.getId()){
@@ -107,14 +106,22 @@ int main(){
                         }
                         file.clear();
                         file.seekp(0,ios::end);
-                        file.write((char *)&emp,sizeof(emp));
+                        file.write((char*)&emp,sizeof(emp));
                         cout<<"Data Saved ";
                         getch();
                         file.close();
                         break;
-
                     }
                     case 2:{
+                        file.open(fileName,ios::in);
+                        file.clear();
+                        file.seekg(0,ios::beg);
+                        e.displayHeader();
+                        while(file.read((char*)&e,sizeof(e))){
+                            e.displayEmployeeDetails();
+                        }
+                        file.close();
+                        getch();
                         break;
                     }
                     case 3:{
