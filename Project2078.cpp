@@ -125,6 +125,33 @@ int main(){
                         break;
                     }
                     case 3:{
+                        int recordNo=0,Id,isFound=0;
+                        cout<<endl<<"Enter the ID to update";
+                        cin>>Id;
+                        file.open(fileName,ios::ate|ios::in|ios::out|ios::binary);
+                        file.clear();
+                        file.seekg(0,ios::beg);
+                        while(file.read((char*)&e,sizeof(e))){
+                            recordNo++;
+                            if(e.getId()==Id){
+                                e.displayHeader();
+                                e.displayEmployeeDetails();
+                                isFound=1;
+                                break;
+                            }
+                        }
+                        if(isFound==0){
+                            cout<<endl<<"No record Found";
+                            getch();
+                            break;
+                        }
+                        file.clear();
+                        int location=(recordNo-1)*sizeof(e);
+                        file.seekp(location,ios::beg);
+                        cout<<endl<<"Enter New record for employee"<<endl;
+                        e.getEmployeeDetails();
+                        file.write((char*)&e,sizeof(e));
+                        file.close();
                         break;
                     }
                     case 4:{
